@@ -1,0 +1,8 @@
+#application.properties
+
+
+target/*
+.idea*
+mvnw*
+HELP.md
+#/src/main/java/br/com/impacta/bootcamp/commons/automatizar/CriarClasseDTO.java
