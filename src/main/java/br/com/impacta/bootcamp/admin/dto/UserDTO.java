@@ -20,6 +20,8 @@ public class UserDTO {
     @Validation(required = true, lengthMax = 120, lengthMin = 3)
     private String sobrenome;
 
+    private Boolean administrador;
+
     @Unico
     @Validation(required = true, lengthMax = 120, lengthMin = 35)
     private String passwordHash;

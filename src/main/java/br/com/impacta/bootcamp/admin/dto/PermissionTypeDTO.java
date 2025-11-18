@@ -8,9 +8,11 @@ public class PermissionTypeDTO {
 
     private long id;
 
-    @Validation(required = true, lengthMax = 150, lengthMin = 10)
+    @Validation(required = true, lengthMax = 150, lengthMin = 3)
     private String descricao;
 
+    private String permissionGroupDescricao;
 
+    private Long permissionGroupId;
 
 }

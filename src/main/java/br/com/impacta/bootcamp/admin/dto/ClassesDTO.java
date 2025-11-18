@@ -14,7 +14,9 @@ public class ClassesDTO {
 
     private long id;
 
-    @Validation(required = true, lengthMax = 100, lengthMin = 10)
+    private String name;
+
+    @Validation(required = true, lengthMax = 100, lengthMin = 3)
     private String simpleName;
 
 }

@@ -1,6 +1,7 @@
 package br.com.impacta.bootcamp.formacao.model;
 
 import br.com.impacta.bootcamp.admin.model.User;
+import br.com.impacta.bootcamp.commons.util.Ignore;
 import br.com.impacta.bootcamp.commons.util.Unico;
 import br.com.impacta.bootcamp.commons.util.Validation;
 import br.com.impacta.bootcamp.formacao.enums.StatusCourse;
@@ -42,9 +43,11 @@ public class Course {
     @Column(name = "published_at")
     private Date publishedAt; // timestamptz
 
+    @Ignore
     @Column(name = "created_at", updatable = false)
     private Date createdAt; // timestamptz DEFAULT now()
 
+    @Ignore
     @Column(name = "updated_at")
     private Date updatedAt; // timestamptz DEFAULT now()
 

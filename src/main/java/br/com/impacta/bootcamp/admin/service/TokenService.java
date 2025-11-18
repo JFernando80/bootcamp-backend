@@ -5,6 +5,7 @@ import br.com.impacta.bootcamp.admin.dto.TokenDTO;
 import br.com.impacta.bootcamp.admin.model.Token;
 import br.com.impacta.bootcamp.admin.model.User;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
+import br.com.impacta.bootcamp.commons.model.Content;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface TokenService {
     Token getTokenByToken(String token);
 
     Token getRefreshTokenByUser(String refreshToken, long l);
+
+    Content montarContentFromToken(TokenDTO tokenDTO);
 }

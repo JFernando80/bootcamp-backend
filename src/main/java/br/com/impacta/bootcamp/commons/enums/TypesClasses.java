@@ -10,7 +10,8 @@ public enum TypesClasses {
     LIST,
     ENUM,
     DATE,
-    BOOLEAN;
+    BOOLEAN,
+    UUID;
 
     public static boolean existe(String valor) {
         for (int i = 0; i < TypesClasses.values().length; i++) {

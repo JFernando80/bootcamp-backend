@@ -27,4 +27,6 @@ public interface ClassesVariaveisService {
     List<ClassesVariaveisDTO> findAllByClassesAndStatus(Classes classes, Locale locale);
 
     List<ClassesVariaveisDTO> findAllByClassesAndStatus(Classes classes, Content content);
+
+    ClassesVariaveis findByClassesAndVariavel(Classes cl, String variavel);
 }

@@ -4,6 +4,7 @@ package br.com.impacta.bootcamp.admin.service.impl;
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.admin.dto.PermissionDTO;
 import br.com.impacta.bootcamp.admin.model.Permission;
+import br.com.impacta.bootcamp.admin.model.PermissionType;
 import br.com.impacta.bootcamp.admin.repository.PermissionRepository;
 import br.com.impacta.bootcamp.admin.service.PermissionService;
 import br.com.impacta.bootcamp.admin.specification.PermissionSpecification;
@@ -55,6 +56,11 @@ public class PermissionServiceImpl implements PermissionService {
         bodyListDTO.setTotal(msPage.getTotalPages());
         bodyListDTO.setPagina(pagina);
         return bodyListDTO;
+    }
+
+    @Override
+    public List<Permission> findAllInterno() {
+        return permissionRepository.findAll();
     }
 
     @Override
@@ -130,6 +136,11 @@ public class PermissionServiceImpl implements PermissionService {
         List<SearchCriteriaDTO> lista = new ArrayList<>();
 
         SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+        criteria.setKey("serial");
+        criteria.setValue(dto.getSerial());
+        criteria.setOperation(SearchOperation.EQUAL.name());
+        lista.add(criteria);
+
         int pagina = 1;
         BodyListDTO bodyListDTO = getAll(lista, pagina);
         if (!bodyListDTO.getLista().isEmpty()) {

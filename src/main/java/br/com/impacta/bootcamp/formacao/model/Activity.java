@@ -1,6 +1,7 @@
 package br.com.impacta.bootcamp.formacao.model;
 
 import br.com.impacta.bootcamp.commons.util.ClassePersonal;
+import br.com.impacta.bootcamp.commons.util.Ignore;
 import br.com.impacta.bootcamp.commons.util.Unico;
 import br.com.impacta.bootcamp.commons.util.Validation;
 import jakarta.persistence.*;
@@ -24,6 +25,7 @@ public class Activity {
     @Column(name = "type")
     private String type; // text
 
+    @Ignore
     @Validation(required = true)
     @Column(name = "config")
     private String configJson; // ou Map<String, Object> config;
@@ -36,9 +38,11 @@ public class Activity {
     @Column(name = "passing_score")
     private Long passingScore; // int DEFAULT 70
 
+    @Ignore
     @Column(name = "created_at", updatable = false)
     private Date createdAt; // timestamptz DEFAULT now()
 
+    @Ignore
     @Column(name = "updated_at")
     private Date updatedAt; // timestamptz DEFAULT now()
 

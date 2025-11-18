@@ -16,7 +16,7 @@ public enum PermissoesEnum {
     CADASTRAR_COURSE(1, Constants.ATENDIDO, "Cadastrar Course", Constants.MENU, Status.ATIVO, 28385985763L),
     LISTAR_COURSE(2, Constants.ATENDIDO, "Listar Course", Constants.MENU, Status.ATIVO, 48117929230L),
     EDITAR_COURSE(3, Constants.ATENDIDO, "Editar Course", Constants.EDITAR, Status.ATIVO, 122803556242L),
-    DELETAR_COURSE(4, Constants.ATENDIDO, "Deletar Course", Constants.DELETAR, Status.ATIVO, 637430260702L),RELATORIO_SENAI(0, Constants.ATENDIDO, "Relatorio Senai", Constants.MENU, Status.ATIVO, 403540333738L),
+    DELETAR_COURSE(4, Constants.ATENDIDO, "Deletar Course", Constants.DELETAR, Status.ATIVO, 637430260702L),
 
 
 

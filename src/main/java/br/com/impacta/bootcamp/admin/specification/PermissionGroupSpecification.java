@@ -28,9 +28,7 @@ public class PermissionGroupSpecification implements Specification<PermissionGro
         //create a new predicate list
         List<Predicate> predicates = new ArrayList<>();
 
-        Join<PermissionGroup, Status> status = root.join("status", JoinType.LEFT);
         List<Join> allJoins = new ArrayList<>();
-        allJoins.add(status);
 
         Beans.montarSpecification(predicates, list, root, builder, allJoins);
 

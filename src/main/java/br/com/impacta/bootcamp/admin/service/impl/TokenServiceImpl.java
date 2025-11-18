@@ -3,14 +3,19 @@ package br.com.impacta.bootcamp.admin.service.impl;
 
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.admin.dto.TokenDTO;
+import br.com.impacta.bootcamp.admin.dto.UsuarioLogadoDTO;
+import br.com.impacta.bootcamp.admin.model.PerfilPermissionType;
 import br.com.impacta.bootcamp.admin.model.Token;
 import br.com.impacta.bootcamp.admin.model.User;
+import br.com.impacta.bootcamp.admin.model.UserPermissionType;
 import br.com.impacta.bootcamp.admin.repository.TokenRepository;
+import br.com.impacta.bootcamp.admin.service.LoginService;
 import br.com.impacta.bootcamp.admin.service.TokenService;
 import br.com.impacta.bootcamp.admin.service.UserService;
 import br.com.impacta.bootcamp.admin.specification.TokenSpecification;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
 import br.com.impacta.bootcamp.commons.exception.BusinessRuleException;
+import br.com.impacta.bootcamp.commons.model.Content;
 import br.com.impacta.bootcamp.commons.util.Beans;
 import br.com.impacta.bootcamp.commons.util.Validador;
 import br.com.impacta.bootcamp.seguranca.dto.SecurityDTO;
@@ -38,6 +43,9 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private LoginService loginService;
 
     @Autowired
     private Beans beans;
@@ -145,6 +153,23 @@ public class TokenServiceImpl implements TokenService {
             throw new BusinessRuleException("relogar no sistema");
         }
         return montarTokenDTO(token);
+    }
+
+    @Override
+    public Content montarContentFromToken(TokenDTO tokenDTO) {
+        Token token = getTokenByToken(tokenDTO.getToken());
+        Content content = new Content();
+
+        User user = token.getUser();
+        UsuarioLogadoDTO usuarioLogadoDTO = loginService.montarUsuarioLogadoDTO(user, false);
+
+        usuarioLogadoDTO.setTokenDTO(montarTokenDTO(token));
+
+        content.setUser(token.getUser());
+        content.setLocale(new Locale("pt", "BR"));
+        content.setUsuarioLogadoDTO(usuarioLogadoDTO);
+
+        return content;
     }
 
     private Boolean validadeDoToken(Token token) {

@@ -7,9 +7,11 @@ import br.com.impacta.bootcamp.admin.dto.ClassesVariaveisDTO;
 import br.com.impacta.bootcamp.admin.model.Classes;
 import br.com.impacta.bootcamp.admin.model.ClassesVariaveis;
 import br.com.impacta.bootcamp.admin.repository.ClassesVariaveisRepository;
+import br.com.impacta.bootcamp.admin.service.ClassesService;
 import br.com.impacta.bootcamp.admin.service.ClassesVariaveisService;
 import br.com.impacta.bootcamp.admin.specification.ClassesVariaveisSpecification;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
+import br.com.impacta.bootcamp.commons.enums.SearchOperation;
 import br.com.impacta.bootcamp.commons.enums.Status;
 import br.com.impacta.bootcamp.commons.exception.BusinessRuleException;
 import br.com.impacta.bootcamp.commons.model.Content;
@@ -29,6 +31,9 @@ public class ClassesVariaveisServiceImpl implements ClassesVariaveisService {
 
     @Autowired
     private ClassesVariaveisRepository classesVariaveisRepository;
+
+    @Autowired
+    private ClassesService classesService;
 
     @Autowired
     private Beans beans;
@@ -88,13 +93,15 @@ public class ClassesVariaveisServiceImpl implements ClassesVariaveisService {
         dto.setTipo(entity.getTipo());
         dto.setVariavel(entity.getVariavel());
         dto.setHeader(entity.getVariavel());
+        dto.setClassesDTO(classesService.montarDTO(entity.getClasses()));
+
         return dto;
     }
 
     @Override
     public List<ClassesVariaveisDTO> findAllByClassesAndStatus(Classes classes, Locale locale) {
         String local = locale.getLanguage() + "_" + locale.getCountry();
-        List<ClassesVariaveisDTO> lista =  classesVariaveisRepository.findAllByClassesAndStatusOrderByIdAsc(classes, Status.ATIVO)
+        List<ClassesVariaveisDTO> lista =  classesVariaveisRepository.findAllByClassesOrderByIdAsc(classes)
                 .stream()
                 .map(classesVariaveis -> montarDTO(classesVariaveis, local)).collect(Collectors.toList());
 
@@ -140,6 +147,11 @@ public class ClassesVariaveisServiceImpl implements ClassesVariaveisService {
     }
 
     @Override
+    public ClassesVariaveis findByClassesAndVariavel(Classes cl, String variavel) {
+        return classesVariaveisRepository.findByClassesAndVariavel(cl, variavel);
+    }
+
+    @Override
     public List<ClassesVariaveisDTO> findAllByClassesAndStatus(Classes classes, Content content) {
         String local = content.getLocale().getLanguage() + "_" + content.getLocale().getCountry();
 
@@ -165,7 +177,7 @@ public class ClassesVariaveisServiceImpl implements ClassesVariaveisService {
 
     private List<ClassesVariaveisDTO> montarPorClasses(String local, Classes classes) {
         List<ClassesVariaveisDTO> listaNova = new ArrayList<>();
-        List<ClassesVariaveisDTO> lista =  classesVariaveisRepository.findAllByClassesAndStatusOrderByIdAsc(classes, Status.ATIVO)
+        List<ClassesVariaveisDTO> lista =  classesVariaveisRepository.findAllByClassesOrderByIdAsc(classes)
                 .stream()
                 .map(classesVariaveis -> montarDTO(classesVariaveis, local)).collect(Collectors.toList());
 
@@ -185,6 +197,10 @@ public class ClassesVariaveisServiceImpl implements ClassesVariaveisService {
     private ClassesVariaveis montarEntity(ClassesVariaveisDTO dto) {
         ClassesVariaveis entity = new ClassesVariaveis();
         beans.updateObjectos(entity, dto);
+
+        Classes classes = classesService.findByName(dto.getClassesDTO().getName());
+        entity.setClasses(classes);
+
         return entity ;
     }
 
@@ -214,6 +230,18 @@ public class ClassesVariaveisServiceImpl implements ClassesVariaveisService {
         List<SearchCriteriaDTO> lista = new ArrayList<>();
 
         SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+        criteria.setKey("name");
+        criteria.setValue(dto.getClassesDTO().getName());
+        criteria.setOperation(SearchOperation.EQUAL.name());
+        criteria.setClasses("classes");
+        lista.add(criteria);
+
+        criteria = new SearchCriteriaDTO();
+        criteria.setKey("variavel");
+        criteria.setValue(dto.getVariavel());
+        criteria.setOperation(SearchOperation.EQUAL.name());
+        lista.add(criteria);
+
         int pagina = 1;
         BodyListDTO bodyListDTO = getAll(lista, pagina);
         if (!bodyListDTO.getLista().isEmpty()) {
@@ -241,7 +269,7 @@ public class ClassesVariaveisServiceImpl implements ClassesVariaveisService {
 
     private ClassesVariaveisDTO montarDTO(ClassesVariaveis classesVariaveis, String local) {
 
-        ClassesDTO dto = new ClassesDTO(classesVariaveis.getClasses().getId(), classesVariaveis.getClasses().getSimpleName());
+        ClassesDTO dto = new ClassesDTO(classesVariaveis.getClasses().getId(), classesVariaveis.getClasses().getName(), classesVariaveis.getClasses().getSimpleName());
 
         ClassesVariaveisDTO variaveisDTO = new ClassesVariaveisDTO();
         variaveisDTO.setStatus(Status.valueOf(classesVariaveis.getStatus()));

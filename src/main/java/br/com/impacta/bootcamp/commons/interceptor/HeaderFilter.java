@@ -5,6 +5,7 @@ import br.com.impacta.bootcamp.admin.dto.TokenDTO;
 import br.com.impacta.bootcamp.admin.dto.UserDTO;
 import br.com.impacta.bootcamp.admin.dto.UsuarioLogadoDTO;
 import br.com.impacta.bootcamp.admin.model.User;
+import br.com.impacta.bootcamp.admin.service.TokenService;
 import br.com.impacta.bootcamp.commons.dto.PermissionsDTO;
 import br.com.impacta.bootcamp.commons.exception.BusinessRuleException;
 import br.com.impacta.bootcamp.commons.model.Content;
@@ -30,16 +31,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HeaderFilter implements Filter {
 
+    @Autowired
+    private TokenService tokenService;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
     }
-
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Value("${server.autorizador}")
-    private String urlServer;
 
     public static final String CORRELATION_ID_HEADER_NAME = "X-Correlation-Id";
 
@@ -55,47 +53,10 @@ public class HeaderFilter implements Filter {
 
         MDC.put(CORRELATION_ID_HEADER_NAME, correlationId);
 
-        String url = urlServer+"autorizar";
-        String value = req.getHeader("autorization");
-        String companyCNPJ = req.getHeader("company");
+        String value = req.getHeader("authorization");
         String usuario = "";
         if (Objects.nonNull(value)) {
-            ObjectMapper mapper = new ObjectMapper();
-
-            ResponseEntity<JsonResponse> responseEntity = buscarToken(value, companyCNPJ, url);
-
-            if (Objects.nonNull(responseEntity.getBody()) ) {
-                Map<String, Object> map = (Map<String, Object>) responseEntity.getBody().getBody();
-                User user = mapper.convertValue(map.get("user"), User.class);
-
-                String local = map.get("locale").toString();
-                Locale locale = new Locale(local.substring(0, local.indexOf("_")), local.substring(local.indexOf("_")+1));
-
-                Map<String, Object> logado = (Map<String, Object>) map.get("usuarioLogadoDTO");
-                UsuarioLogadoDTO logadoDTO = new UsuarioLogadoDTO();
-                logadoDTO.setUserDTO(mapper.convertValue(logado.get("userDTO"), UserDTO.class));
-                if (logado.containsKey("logo") && logado.get("logo") != null) {
-                    logadoDTO.setLogo(logado.get("logo").toString());
-                }
-                logadoDTO.setTokenDTO(mapper.convertValue(logado.get("tokenDTO"), TokenDTO.class));
-                List lista = (ArrayList) logado.get("permissionsDTOS");
-                for (Object o : lista) {
-                    Map<String, Object> permissionT = (Map<String, Object>) o;
-                    Long permission = Long.parseLong(permissionT.get("permission").toString());
-                    logadoDTO.getPermissionsDTOS().add(new PermissionsDTO(permission));
-                }
-
-                Content content = new Content();
-                content.setUser(user);
-                content.setLocale(locale);
-                content.setUsuarioLogadoDTO(logadoDTO);
-                usuario = content.getUser().getName();
-                request.setAttribute("content", content);
-            }
-        } else {
-            Content content = new Content();
-            content.setIp(request.getRemoteAddr());
-            request.setAttribute("content", content);
+            request.setAttribute("content", buscarToken(value));
         }
 
         String body = "";
@@ -110,7 +71,6 @@ public class HeaderFilter implements Filter {
 
         if (! ((HttpServletRequest) request).getMethod().equalsIgnoreCase("options") ) {
             log.info(((HttpServletRequest) request).getRequestURI()+" - " +((HttpServletRequest) request).getMethod() + " " + body + " - " + usuario + " - "+value+ " - "+request.getRemoteAddr());
-
         }
 
         try {
@@ -125,22 +85,12 @@ public class HeaderFilter implements Filter {
 
     }
 
-    private ResponseEntity<JsonResponse> buscarToken(String value, String companyCNPJ, String url) {
+    private Content buscarToken(String value) {
 
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.setToken(value);
-            HttpEntity<String> requestEntity = new HttpEntity<>(new ObjectMapper().writeValueAsString(tokenDTO ),  headers);
-
-            return restTemplate.exchange(
-                    url,
-                    HttpMethod.POST,
-                    requestEntity,
-                    JsonResponse.class
-            );
+            return tokenService.montarContentFromToken(tokenDTO);
 
         } catch (Exception e) {
             log.error("erro ao buscar o token de acesso - " + value) ;

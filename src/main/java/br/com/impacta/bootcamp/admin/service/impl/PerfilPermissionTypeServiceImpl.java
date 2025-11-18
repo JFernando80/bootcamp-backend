@@ -4,9 +4,12 @@ package br.com.impacta.bootcamp.admin.service.impl;
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.admin.dto.PerfilPermissionTypeDTO;
 import br.com.impacta.bootcamp.admin.model.PerfilPermissionType;
+import br.com.impacta.bootcamp.admin.model.Permission;
 import br.com.impacta.bootcamp.admin.model.PermissionType;
 import br.com.impacta.bootcamp.admin.repository.PerfilPermissionTypeRepository;
 import br.com.impacta.bootcamp.admin.service.PerfilPermissionTypeService;
+import br.com.impacta.bootcamp.admin.service.PermissionService;
+import br.com.impacta.bootcamp.admin.service.PermissionTypeService;
 import br.com.impacta.bootcamp.admin.specification.PerfilPermissionTypeSpecification;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
 import br.com.impacta.bootcamp.commons.enums.SearchOperation;
@@ -29,6 +32,12 @@ public class PerfilPermissionTypeServiceImpl implements PerfilPermissionTypeServ
 
     @Autowired
     private PerfilPermissionTypeRepository perfilPermissionTypeRepository;
+
+    @Autowired
+    private PermissionTypeService permissionTypeService;
+
+    @Autowired
+    private PermissionService permissionService;
 
     @Autowired
     private Beans beans;
@@ -86,6 +95,12 @@ public class PerfilPermissionTypeServiceImpl implements PerfilPermissionTypeServ
         PerfilPermissionTypeDTO dto = new PerfilPermissionTypeDTO();
         beans.updateObjectos(dto, entity);
 
+        dto.setPermissionPermissionDescription(entity.getPermission().getPermissionDescription());
+        dto.setPermissionId(entity.getPermission().getId());
+
+        dto.setPermissionTypeDescricao(entity.getPermissionType().getDescricao());
+        dto.setPermissionTypeId(entity.getPermissionType().getId());
+
         return dto;
     }
 
@@ -97,6 +112,13 @@ public class PerfilPermissionTypeServiceImpl implements PerfilPermissionTypeServ
     private PerfilPermissionType montarEntity(PerfilPermissionTypeDTO dto) {
         PerfilPermissionType entity = new PerfilPermissionType();
         beans.updateObjectos(entity, dto);
+
+        PermissionType type = permissionTypeService.findByIdInterno(dto.getPermissionTypeId());
+        entity.setPermissionType(type);
+
+        Permission permission = permissionService.findByIdInterno(dto.getPermissionId());
+        entity.setPermission(permission);
+
         return entity ;
     }
 
@@ -125,7 +147,20 @@ public class PerfilPermissionTypeServiceImpl implements PerfilPermissionTypeServ
 
         List<SearchCriteriaDTO> lista = new ArrayList<>();
 
-        SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+        SearchCriteriaDTO criteriaDTO = new SearchCriteriaDTO();
+        criteriaDTO.setKey("permissionDescription");
+        criteriaDTO.setValue(dto.getPermissionPermissionDescription());
+        criteriaDTO.setOperation(SearchOperation.EQUAL.name());
+        criteriaDTO.setClasses("permission");
+        lista.add(criteriaDTO);
+
+        criteriaDTO = new SearchCriteriaDTO();
+        criteriaDTO.setKey("descricao");
+        criteriaDTO.setValue(dto.getPermissionTypeDescricao());
+        criteriaDTO.setOperation(SearchOperation.EQUAL.name());
+        criteriaDTO.setClasses("permissionType");
+        lista.add(criteriaDTO);
+
         int pagina = 1;
         BodyListDTO bodyListDTO = getAll(lista, pagina);
         if (!bodyListDTO.getLista().isEmpty()) {

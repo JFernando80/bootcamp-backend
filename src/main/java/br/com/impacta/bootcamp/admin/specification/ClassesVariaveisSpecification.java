@@ -30,10 +30,8 @@ public class ClassesVariaveisSpecification implements Specification<ClassesVaria
         List<Predicate> predicates = new ArrayList<>();
 
         Join<ClassesVariaveis, Classes> classes = root.join("classes", JoinType.LEFT);
-        Join<ClassesVariaveis, Status> status = root.join("status", JoinType.LEFT);
         List<Join> allJoins = new ArrayList<>();
         allJoins.add(classes);
-        allJoins.add(status);
 
         Beans.montarSpecification(predicates, list, root, builder, allJoins);
 

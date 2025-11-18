@@ -8,6 +8,7 @@ import br.com.impacta.bootcamp.admin.repository.ClassesRepository;
 import br.com.impacta.bootcamp.admin.service.ClassesService;
 import br.com.impacta.bootcamp.admin.specification.ClassesSpecification;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
+import br.com.impacta.bootcamp.commons.enums.SearchOperation;
 import br.com.impacta.bootcamp.commons.exception.BusinessRuleException;
 import br.com.impacta.bootcamp.commons.util.Beans;
 import br.com.impacta.bootcamp.commons.util.Validador;
@@ -90,7 +91,6 @@ public class ClassesServiceImpl implements ClassesService {
     public ClassesDTO montarDTO(Classes entity) {
         ClassesDTO dto = new ClassesDTO();
         beans.updateObjectos(dto, entity);
-
         return dto;
     }
 
@@ -126,6 +126,11 @@ public class ClassesServiceImpl implements ClassesService {
         List<SearchCriteriaDTO> lista = new ArrayList<>();
 
         SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+        criteria.setKey("simpleName");
+        criteria.setValue(dto.getSimpleName());
+        criteria.setOperation(SearchOperation.EQUAL.name());
+        lista.add(criteria);
+
         int pagina = 1;
         BodyListDTO bodyListDTO = getAll(lista, pagina);
         if (!bodyListDTO.getLista().isEmpty()) {

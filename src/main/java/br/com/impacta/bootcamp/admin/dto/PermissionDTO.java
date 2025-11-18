@@ -8,7 +8,7 @@ public class PermissionDTO {
 
     private long id;
 
-    @Validation(required = true, lengthMin = 10, lengthMax = 50)
+    @Validation(required = true, lengthMin = 4, lengthMax = 50)
     private String permission;
 
     @Validation(required = true, lengthMin = 10, lengthMax = 150)

@@ -1,6 +1,7 @@
 package br.com.impacta.bootcamp.admin.dto;
 
 import br.com.impacta.bootcamp.commons.enums.Status;
+import br.com.impacta.bootcamp.commons.util.ClassePersonal;
 import br.com.impacta.bootcamp.commons.util.Validation;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -20,10 +21,10 @@ public class ClassesVariaveisDTO {
 
     private ClassesDTO classesDTO;
 
-    @Validation(required = true, lengthMax = 70, lengthMin = 10)
+    @Validation(required = true, lengthMax = 70, lengthMin = 1)
     private String variavel;
 
-    @Validation(required = true, lengthMax = 70, lengthMin = 10)
+    @Validation(required = true, lengthMax = 70, lengthMin = 3)
     private String tipo;
 
     @Validation(required = true)

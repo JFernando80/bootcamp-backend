@@ -75,7 +75,7 @@ public class CourseController {
     public JsonResponse consulta(@RequestAttribute(value = "content") Content content) {
 
         Classes classes = classesService.findByName(Course.class.getName());
-        List<ClassesVariaveisDTO> campos = classesVariaveisService.findAllByClassesAndStatus(classes, content);;
+        List<ClassesVariaveisDTO> campos = classesVariaveisService.findAllByClassesAndStatus(classes, content);
         return JsonResponse.ok(campos);
     }
 }

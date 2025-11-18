@@ -31,10 +31,8 @@ public class CourseSpecification implements Specification<Course> {
         List<Predicate> predicates = new ArrayList<>();
 
         Join<Course, User> ownerUser = root.join("ownerUser", JoinType.LEFT);
-        Join<Course, StatusCourse> status = root.join("status", JoinType.LEFT);
         List<Join> allJoins = new ArrayList<>();
         allJoins.add(ownerUser);
-        allJoins.add(status);
 
         Beans.montarSpecification(predicates, list, root, builder, allJoins);
 

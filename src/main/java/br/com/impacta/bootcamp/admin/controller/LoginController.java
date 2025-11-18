@@ -31,9 +31,6 @@ public class LoginController {
     @Autowired
     private Beans beans;
 
-    @Value("${server.key.public}")
-    private String publicKey;
-
     @PostMapping(value = "/login")
     public JsonResponse login(
             @RequestBody LoginDTO loginDTO,

@@ -1,6 +1,7 @@
 package br.com.impacta.bootcamp.formacao.model;
 
 import br.com.impacta.bootcamp.commons.util.ClassePersonal;
+import br.com.impacta.bootcamp.commons.util.Ignore;
 import br.com.impacta.bootcamp.commons.util.Unico;
 import br.com.impacta.bootcamp.commons.util.Validation;
 import jakarta.persistence.*;
@@ -41,6 +42,7 @@ public class Module {
     @Column(name = "created_at", updatable = false)
     private Date createdAt; // timestamptz DEFAULT now()
 
+    @Ignore
     @Validation(dateMax = "+0d")
     @Column(name = "updated_at")
     private Date updatedAt; // timestamptz DEFAULT now()

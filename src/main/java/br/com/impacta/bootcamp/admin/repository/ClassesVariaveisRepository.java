@@ -13,9 +13,9 @@ public interface ClassesVariaveisRepository extends
         JpaRepository<ClassesVariaveis, Long>,
         JpaSpecificationExecutor<ClassesVariaveis> {
 
-    Optional<ClassesVariaveis> findByClassesAndVariavel(Classes classes, String variavel);
+    ClassesVariaveis findByClassesAndVariavel(Classes classes, String variavel);
 
     List<ClassesVariaveis> findAllByClassesOrderByVariavelAsc(Classes classes);
 
-    List<ClassesVariaveis> findAllByClassesAndStatusOrderByIdAsc(Classes classes, Status status);
+    List<ClassesVariaveis> findAllByClassesOrderByIdAsc(Classes classes);
 }

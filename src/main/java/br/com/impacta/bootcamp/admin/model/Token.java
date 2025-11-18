@@ -1,5 +1,6 @@
 package br.com.impacta.bootcamp.admin.model;
 
+import br.com.impacta.bootcamp.commons.util.Ignore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,10 +21,12 @@ public class Token {
     @Column(name = "token", length = 150)
     private String token;
 
+    @Ignore
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "expira_em")
     private Date expiraEm;
 
+    @Ignore
     @Column(name = "refresh_token", length = 150)
     private String refreshToken;
 

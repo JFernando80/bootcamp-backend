@@ -3,10 +3,13 @@ package br.com.impacta.bootcamp.admin.service.impl;
 
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.admin.dto.UserPermissionTypeDTO;
+import br.com.impacta.bootcamp.admin.model.PermissionType;
 import br.com.impacta.bootcamp.admin.model.User;
 import br.com.impacta.bootcamp.admin.model.UserPermissionType;
 import br.com.impacta.bootcamp.admin.repository.UserPermissionTypeRepository;
+import br.com.impacta.bootcamp.admin.service.PermissionTypeService;
 import br.com.impacta.bootcamp.admin.service.UserPermissionTypeService;
+import br.com.impacta.bootcamp.admin.service.UserService;
 import br.com.impacta.bootcamp.admin.specification.UserPermissionTypeSpecification;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
 import br.com.impacta.bootcamp.commons.enums.SearchOperation;
@@ -29,6 +32,12 @@ public class UserPermissionTypeServiceImpl implements UserPermissionTypeService 
 
     @Autowired
     private UserPermissionTypeRepository userPermissionTypeRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PermissionTypeService permissionTypeService;
 
     @Autowired
     private Beans beans;
@@ -86,6 +95,12 @@ public class UserPermissionTypeServiceImpl implements UserPermissionTypeService 
         UserPermissionTypeDTO dto = new UserPermissionTypeDTO();
         beans.updateObjectos(dto, entity);
 
+        dto.setUserName(entity.getUser().getName());
+        dto.setUserEmail(entity.getUser().getEmail());
+
+        dto.setPermissionTypeDescricao(entity.getPermissionType().getDescricao());
+        dto.setPermissionTypeId(entity.getPermissionType().getId());
+
         return dto;
     }
 
@@ -97,6 +112,14 @@ public class UserPermissionTypeServiceImpl implements UserPermissionTypeService 
     private UserPermissionType montarEntity(UserPermissionTypeDTO dto) {
         UserPermissionType entity = new UserPermissionType();
         beans.updateObjectos(entity, dto);
+
+        User user = userService.findByEmailInterno(dto.getUserEmail());
+        entity.setUser(user);
+
+        PermissionType permissionType = permissionTypeService.findByIdInterno(dto.getPermissionTypeId());
+        entity.setPermissionType(permissionType);
+
+
         return entity ;
     }
 
@@ -125,7 +148,20 @@ public class UserPermissionTypeServiceImpl implements UserPermissionTypeService 
 
         List<SearchCriteriaDTO> lista = new ArrayList<>();
 
-        SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+        SearchCriteriaDTO criteriaDTO = new SearchCriteriaDTO();
+        criteriaDTO.setKey("email");
+        criteriaDTO.setValue(dto.getUserName());
+        criteriaDTO.setOperation(SearchOperation.EQUAL.name());
+        criteriaDTO.setClasses("user");
+        lista.add(criteriaDTO);
+
+        criteriaDTO = new SearchCriteriaDTO();
+        criteriaDTO.setKey("id");
+        criteriaDTO.setValue(dto.getPermissionTypeId());
+        criteriaDTO.setOperation(SearchOperation.EQUAL.name());
+        criteriaDTO.setClasses("permissionType");
+        lista.add(criteriaDTO);
+
         int pagina = 1;
         BodyListDTO bodyListDTO = getAll(lista, pagina);
         if (!bodyListDTO.getLista().isEmpty()) {

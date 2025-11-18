@@ -76,9 +76,6 @@ public class Beans {
     private String ambiente;
 
 
-    @Value("${server.key.private}")
-    private String privateKey;
-
     private String patternHora = "HH:mm";
     private String pattern = "dd/MM/yyyy";
 
@@ -442,7 +439,10 @@ public class Beans {
                 cv.setVariavel(f.getName());
                 cv.setClasses(classes);
                 cv.setStatus(Status.INATIVO.name());
-                campos.add(cv);
+
+                if (!f.isAnnotationPresent(Ignore.class)) {
+                    campos.add(cv);
+                }
             }
         }
     }
@@ -1424,15 +1424,6 @@ public class Beans {
         }
     }
 
-    public HttpHeaders getHealders(String token, String company) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("autorization", token);
-        if (company != null) {
-            headers.add("company", company);
-        }
-        return headers;
-    }
 
     public String toJson(Object o) {
         try {
@@ -1527,10 +1518,6 @@ public class Beans {
         }
 
         log.info("usuario: "+usuario.getName()+" - "+ usuario.getId() + " atualizador: "+atualizador.getId() + " - " +atualizador.getName());
-    }
-
-    public String encripty(String texto) {
-        return Base64.getEncoder().encodeToString(RSAUtil.encrypt(texto, privateKey));
     }
 
     public String decripty(String texto, String key) {

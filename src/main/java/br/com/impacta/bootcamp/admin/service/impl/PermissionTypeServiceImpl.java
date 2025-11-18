@@ -3,8 +3,10 @@ package br.com.impacta.bootcamp.admin.service.impl;
 
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.admin.dto.PermissionTypeDTO;
+import br.com.impacta.bootcamp.admin.model.PermissionGroup;
 import br.com.impacta.bootcamp.admin.model.PermissionType;
 import br.com.impacta.bootcamp.admin.repository.PermissionTypeRepository;
+import br.com.impacta.bootcamp.admin.service.PermissionGroupService;
 import br.com.impacta.bootcamp.admin.service.PermissionTypeService;
 import br.com.impacta.bootcamp.admin.specification.PermissionTypeSpecification;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
@@ -28,6 +30,9 @@ public class PermissionTypeServiceImpl implements PermissionTypeService {
 
     @Autowired
     private PermissionTypeRepository permissionTypeRepository;
+
+    @Autowired
+    private PermissionGroupService permissionGroupService;
 
     @Autowired
     private Beans beans;
@@ -85,12 +90,19 @@ public class PermissionTypeServiceImpl implements PermissionTypeService {
         PermissionTypeDTO dto = new PermissionTypeDTO();
         beans.updateObjectos(dto, entity);
 
+        dto.setPermissionGroupId(entity.getPermissionGroup().getId());
+        dto.setPermissionGroupDescricao(entity.getPermissionGroup().getDescricao());
+
         return dto;
     }
 
     private PermissionType montarEntity(PermissionTypeDTO dto) {
         PermissionType entity = new PermissionType();
         beans.updateObjectos(entity, dto);
+
+        PermissionGroup group = permissionGroupService.findByIdInterno(dto.getPermissionGroupId());
+        entity.setPermissionGroup(group);
+
         return entity ;
     }
 
@@ -120,6 +132,18 @@ public class PermissionTypeServiceImpl implements PermissionTypeService {
         List<SearchCriteriaDTO> lista = new ArrayList<>();
 
         SearchCriteriaDTO criteria = new SearchCriteriaDTO();
+        criteria.setKey("descricao");
+        criteria.setValue(dto.getDescricao());
+        criteria.setOperation(SearchOperation.EQUAL.name());
+        lista.add(criteria);
+
+        criteria = new SearchCriteriaDTO();
+        criteria.setKey("descricao");
+        criteria.setValue(dto.getPermissionGroupDescricao());
+        criteria.setOperation(SearchOperation.EQUAL.name());
+        criteria.setClasses("permissionGroup");
+        lista.add(criteria);
+
         int pagina = 1;
         BodyListDTO bodyListDTO = getAll(lista, pagina);
         if (!bodyListDTO.getLista().isEmpty()) {
