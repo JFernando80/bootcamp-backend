@@ -16,9 +16,9 @@ para ações com usuario pegar um token neste endpoint campo "publicKey"
 e o id ambos dentro do body
 
 passo 1
-postman request 'http://localhost:8081/bootcamp/security/cadastro' \
+curl --location 'http://localhost:8081/bootcamp/security/cadastro' \
 --header 'Content-Type: application/json' \
---body ''
+--data ''
 
 response:
 
@@ -38,10 +38,10 @@ passo 2
 no header o token é o id obtido na chamada anterior
 o password hash é sua senha + a public key  codificada no site 1
 
-postman request POST 'http://localhost:8081/bootcamp/user/new' \
+curl --location 'http://localhost:8081/bootcamp/user/new' \
 --header 'token: 402' \
 --header 'Content-Type: application/json' \
---body '{
+--data-raw '{
 "name": "deivid",
 "email": "deividvenancio@gmail.com",
 "sobrenome": "ferreira venancio",
@@ -58,10 +58,10 @@ login ficou assim
 email + }*{ + senha
 encriptar no site 1 com a publickey o codigo gerado vai no campo login
 
-postman request POST 'http://localhost:8081/bootcamp/user/login' \
---header 'token: 853' \
+curl --location 'http://localhost:8081/bootcamp/user/login' \
+--header 'token: 906' \
 --header 'Content-Type: application/json' \
---body '{
-"login": "U2FsdGVkX1/VD/Wml5bHuNATjVxhsRmllq7uxoUKvA3EzertHYP6/ogeg9m2md3gTfeJQc/ce19EpkM+AyMe0g=="
+--data '{
+"login": "U2FsdGVkX1/Mg339oUhQDgfHHiktwjr5io0V5epMsoytechNrZ82Z8HIHB+YG4xHQZ3JfQHqI7reHCMi7Rd9Tw=="
 }'
 
