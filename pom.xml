@@ -136,7 +136,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>app.koyeb.example.App</mainClass>
+                            <mainClass>br.com.impacta.bootcamp.BootcampApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
