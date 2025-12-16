@@ -129,6 +129,18 @@
 					</excludes>
 				</configuration>
 			</plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>app.koyeb.example.App</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
