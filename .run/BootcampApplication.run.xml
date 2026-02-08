@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BootcampApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="DB_PASS" value="npg_yc2akZ9OYUDA" />
+      <env name="DB_URL" value="jdbc:postgresql://ep-aged-credit-adk3uqzx-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&amp;channel_binding=require" />
+      <env name="DB_USER" value="neondb_owner" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="br.com.impacta.bootcamp.BootcampApplication" />
+    <module name="bootcamp" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="br.com.impacta.bootcamp.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -16,8 +16,7 @@ import java.util.UUID;
 public class Activity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "activities_sequence")
-    @SequenceGenerator(name = "activities_sequence", sequenceName = "activities_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // uuid PRIMARY KEY DEFAULT uuid_generate_v4()
 
     @Unico

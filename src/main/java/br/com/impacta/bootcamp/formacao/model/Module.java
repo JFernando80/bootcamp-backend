@@ -18,8 +18,7 @@ import java.util.UUID;
 public class Module {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "modules_sequence")
-    @SequenceGenerator(name = "modules_sequence", sequenceName = "modules_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // uuid PRIMARY KEY DEFAULT uuid_generate_v4()
 
     @Validation(required = true, lengthMin = 1, lengthMax = 100)

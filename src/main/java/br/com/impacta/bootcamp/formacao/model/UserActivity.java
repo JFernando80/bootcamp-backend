@@ -13,8 +13,7 @@ import java.util.UUID;
 public class UserActivity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_activities_sequence")
-    @SequenceGenerator(name = "user_activities_sequence", sequenceName = "user_activities_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // uuid PRIMARY KEY DEFAULT uuid_generate_v4()
 
     @ManyToOne(fetch = FetchType.LAZY)

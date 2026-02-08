@@ -142,6 +142,13 @@ public class ModuleServiceImpl implements ModuleService {
         criteria.setOperation(SearchOperation.EQUAL.name());
         lista.add(criteria);
 
+
+        criteria = new SearchCriteriaDTO();
+        criteria.setKey("index");
+        criteria.setValue(dto.getIndex());
+        criteria.setOperation(SearchOperation.EQUAL.name());
+        lista.add(criteria);
+
         criteria = new SearchCriteriaDTO();
         criteria.setKey("id");
         criteria.setValue(dto.getCourseId());

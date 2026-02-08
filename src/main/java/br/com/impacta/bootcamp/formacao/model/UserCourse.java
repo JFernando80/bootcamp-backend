@@ -18,8 +18,7 @@ import java.util.UUID;
 public class UserCourse {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_courses_sequence")
-    @SequenceGenerator(name = "user_courses_sequence", sequenceName = "user_courses_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // uuid PRIMARY KEY DEFAULT uuid_generate_v4()
 
     @Validation(dateMax = "+0d")

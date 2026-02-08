@@ -19,8 +19,7 @@ import java.time.Instant;
 public class UserModule {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_modules_sequence")
-    @SequenceGenerator(name = "user_modules_sequence", sequenceName = "user_modules_seq", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id; // uuid PRIMARY KEY DEFAULT uuid_generate_v4()
 
     @Validation(dateMax = "+0d")
