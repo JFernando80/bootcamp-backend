@@ -119,15 +119,9 @@ public class TokenServiceImpl implements TokenService {
         SecurityDTO segurancaDTO = securityService.findById(securityId);
         securityService.delete(segurancaDTO);
 
-        String salt = segurancaDTO.getPublicKey();
-        String loginAndRefreshToken = beans.decrypt(salt, refreshToken);
-        String login = loginAndRefreshToken.substring(0, loginAndRefreshToken.indexOf("}*{"));
-        String rtoken = loginAndRefreshToken.substring(loginAndRefreshToken.indexOf("}*{")+3, loginAndRefreshToken.length());
+        Token token = tokenRepository.findByRefreshToken(refreshToken);
 
-        User user = userService.findByEmailInterno(login);
-        Token token = tokenRepository.findByRefreshToken(rtoken);
-
-        if (token != null && Objects.equals(token.getUser(), user)) {
+        if (token != null) {
             renovarToken(token);
             return token;
         }
