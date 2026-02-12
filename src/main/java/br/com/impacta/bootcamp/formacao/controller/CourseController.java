@@ -65,7 +65,6 @@ public class CourseController {
     @Monitorar
     @PostMapping(value = "/filtro/{pagina}")
     public JsonResponse filtro(@RequestBody List<SearchCriteriaDTO> lista,
-                               @RequestAttribute(value = "content") Content content,
                                @PathVariable("pagina") int pagina) {
         return JsonResponse.ok(courseService.getAll(lista, pagina));
     }
