@@ -32,7 +32,6 @@ public class UserCourseDTO {
 
     private String userName;
 
-
     @ClassePersonal (exibe = "description")
     private UUID courseId;
 

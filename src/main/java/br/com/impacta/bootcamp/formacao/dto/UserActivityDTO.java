@@ -21,4 +21,16 @@ public class UserActivityDTO {
     @Validation(required = true, lengthMax = 50, lengthMin = 2)
     private String status;
 
+    private UUID userId;
+
+    private String userName;
+
+    private UUID activityId;
+
+    private String activityType;
+
+    private UUID moduleId;
+
+    private String moduleDescription;
+
 }

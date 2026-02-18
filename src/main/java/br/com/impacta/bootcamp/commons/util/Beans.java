@@ -555,6 +555,12 @@ public class Beans {
            dto.setValue(Boolean.valueOf(dto.getValue().toString()));
         }
 
+
+        try {
+            dto.setValue(UUID.fromString(criteriaDTO.getValue().toString()));
+        } catch (Exception e) {
+
+        }
         if (criteriaDTO.getValue() instanceof UUID) {
             dto.setValue(criteriaDTO.getValue());
         }

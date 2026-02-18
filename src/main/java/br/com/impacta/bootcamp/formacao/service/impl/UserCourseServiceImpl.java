@@ -3,13 +3,12 @@ package br.com.impacta.bootcamp.formacao.service.impl;
 
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.admin.service.UserService;
-import br.com.impacta.bootcamp.formacao.model.Course;
-import br.com.impacta.bootcamp.formacao.service.CourseService;
+import br.com.impacta.bootcamp.formacao.dto.*;
+import br.com.impacta.bootcamp.formacao.model.*;
+import br.com.impacta.bootcamp.formacao.model.Module;
+import br.com.impacta.bootcamp.formacao.service.*;
 import br.com.impacta.bootcamp.admin.model.User;
-import br.com.impacta.bootcamp.formacao.dto.UserCourseDTO;
-import br.com.impacta.bootcamp.formacao.model.UserCourse;
 import br.com.impacta.bootcamp.formacao.repository.UserCourseRepository;
-import br.com.impacta.bootcamp.formacao.service.UserCourseService;
 import br.com.impacta.bootcamp.formacao.specification.UserCourseSpecification;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
 import br.com.impacta.bootcamp.commons.enums.SearchOperation;
@@ -36,10 +35,25 @@ public class UserCourseServiceImpl implements UserCourseService {
     private UserCourseRepository userCourseRepository;
 
     @Autowired
+    private UserModuleService userModuleService;
+
+    @Autowired
+    private UserActivityService userActivityService;
+
+    @Autowired
     private CourseService courseService;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ModuleService moduleService;
+
+    @Autowired
+    private ActivityService activityService;
+
+    @Autowired
+    private CertificateService certificateService;
 
     @Autowired
     private Beans beans;
@@ -72,7 +86,44 @@ public class UserCourseServiceImpl implements UserCourseService {
     @Override
     public void save(UserCourseDTO dto) {
         isRepetido(dto);
-        userCourseRepository.save(montarEntity(dto));
+        UserCourse entity = userCourseRepository.save(montarEntity(dto));
+        criarVinculoModulo(entity);
+    }
+
+    private void criarVinculoModulo(UserCourse userCourse) {
+        List<Module> modules = moduleService.findAllByCourse(userCourse.getCourse());
+
+        for (Module module : modules) {
+
+            UserModuleDTO userModuleDTO = new UserModuleDTO();
+            userModuleDTO.setStartedAtS(beans.converterDateToString(new Date()));
+            userModuleDTO.setUserName(userCourse.getUser().getName());
+            userModuleDTO.setUserId(userCourse.getUser().getId());
+            userModuleDTO.setModuleTitle(module.getTitle());
+            userModuleDTO.setModuleId(module.getId());
+            userModuleDTO.setScore(0L);
+            userModuleDTO.setStatus("MATRICULADO");
+            userModuleService.save(userModuleDTO);
+
+            List<ActivityDTO> activities = activityService.findAllByModule(module);
+            for (ActivityDTO activity : activities) {
+                UserActivityDTO activityDTO = new UserActivityDTO();
+                activityDTO.setStatus("NAO_INICIADO");
+                activityDTO.setScore(0L);
+                activityDTO.setUserId(userCourse.getUser().getId());
+                activityDTO.setUserName(userCourse.getUser().getName());
+                activityDTO.setActivityId(activity.getId());
+                activityDTO.setActivityType(activity.getType());
+                activityDTO.setModuleDescription(module.getDescription());
+                activityDTO.setModuleId(module.getId());
+
+                userActivityService.save(activityDTO);
+            }
+
+        }
+
+
+
     }
 
     @Override
@@ -109,11 +160,56 @@ public class UserCourseServiceImpl implements UserCourseService {
         return dto;
     }
 
+    @Override
+    public void atualizarPercentual(Course course, User user, double total, double feitas) {
+        UserCourse userCourse = userCourseRepository.findByUserAndCourse(user, course);
+        userCourse.setLastActivityAt(new Date());
+        Double percentutal = feitas / total;
+        userCourse.setProgressPercent(percentutal.longValue());
+
+        updateInterno(montarDTO(userCourse));
+    }
+
+    @Override
+    public void finalizarCourse(Course course, User user) {
+        UserCourse userCourse = userCourseRepository.findByUserAndCourse(user, course);
+
+        userCourse.setStatus("FINALIZADO");
+        userCourse.setCertificateIssuedAt(new Date());
+
+        Certificate certificate;
+        if (userCourse.getCertificateToken() == null) {
+            certificate = criarCertificado(user);
+            userCourse.setCertificateToken(certificate.getToken().toString());
+        }
+
+        updateInterno(montarDTO(userCourse));
+    }
+
+    private Certificate criarCertificado(User user) {
+        CertificateDTO certificateDTO = new CertificateDTO();
+        certificateDTO.setData(beans.converterDateToString(new Date()));
+        certificateDTO.setUserName(user.getName());
+        certificateDTO.setToken(UUID.randomUUID());
+
+        certificateService.save(certificateDTO);
+
+        return certificateService.findByToken(certificateDTO.getToken());
+    }
+
     private UserCourse montarEntity(UserCourseDTO dto) {
         UserCourse entity = new UserCourse();
         beans.updateObjectos(entity, dto);
-        Date enrolledAt = beans.converterStringToDate(dto.getEnrolledAtS());
-        entity.setEnrolledAt(enrolledAt);
+
+        if (dto.getProgressPercent() == null) {
+            entity.setProgressPercent(0L);
+        }
+
+        if (dto.getEnrolledAtS() == null) {
+            entity.setEnrolledAt(new Date());
+        } else {
+            entity.setEnrolledAt(beans.converterStringToDate(dto.getEnrolledAtS()));
+        }
 
         Date certificateIssuedAt = beans.converterStringToDate(dto.getCertificateIssuedAtS());
         entity.setCertificateIssuedAt(certificateIssuedAt);

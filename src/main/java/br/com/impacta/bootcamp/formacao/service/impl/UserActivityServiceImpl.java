@@ -2,10 +2,17 @@ package br.com.impacta.bootcamp.formacao.service.impl;
 
 
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
+import br.com.impacta.bootcamp.admin.model.User;
+import br.com.impacta.bootcamp.admin.service.UserService;
 import br.com.impacta.bootcamp.formacao.dto.UserActivityDTO;
+import br.com.impacta.bootcamp.formacao.model.Activity;
+import br.com.impacta.bootcamp.formacao.model.Module;
 import br.com.impacta.bootcamp.formacao.model.UserActivity;
 import br.com.impacta.bootcamp.formacao.repository.UserActivityRepository;
+import br.com.impacta.bootcamp.formacao.service.ActivityService;
+import br.com.impacta.bootcamp.formacao.service.ModuleService;
 import br.com.impacta.bootcamp.formacao.service.UserActivityService;
+import br.com.impacta.bootcamp.formacao.service.UserModuleService;
 import br.com.impacta.bootcamp.formacao.specification.UserActivitySpecification;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
 import br.com.impacta.bootcamp.commons.enums.SearchOperation;
@@ -30,6 +37,18 @@ public class UserActivityServiceImpl implements UserActivityService {
 
     @Autowired
     private UserActivityRepository userActivityRepository;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserModuleService userModuleService;
+
+    @Autowired
+    private ActivityService activityService;
+
+    @Autowired
+    private ModuleService moduleService;
 
     @Autowired
     private Beans beans;
@@ -88,7 +107,29 @@ public class UserActivityServiceImpl implements UserActivityService {
         beans.updateObjectos(dto, entity);
         dto.setSubmittedAtS(beans.converterDateToString(entity.getSubmittedAt()));
 
+        User user = userService.findByIdInterno(entity.getUser().getId());
+        dto.setUserName(user.getName());
+        dto.setUserId(user.getId());
+
+        Module module = moduleService.findByIdInterno(entity.getModule().getId());
+        dto.setModuleId(module.getId());
+        dto.setModuleDescription(module.getDescription());
+
+        Activity activity = activityService.findByIdInterno(entity.getActivity().getId());
+        dto.setActivityId(activity.getId());
+        dto.setActivityType(activity.getType());
+
         return dto;
+    }
+
+    @Override
+    public List<UserActivity> findAllByModule(Module module) {
+        return userActivityRepository.findAllByModule(module);
+    }
+
+    @Override
+    public List<UserActivity> findAllByUser(User user) {
+        return userActivityRepository.findAllByUser(user);
     }
 
     private UserActivity montarEntity(UserActivityDTO dto) {
@@ -96,6 +137,15 @@ public class UserActivityServiceImpl implements UserActivityService {
         beans.updateObjectos(entity, dto);
         Date submittedAt = beans.converterStringToDate(dto.getSubmittedAtS());
         entity.setSubmittedAt(submittedAt);
+
+        User user = userService.findByIdInterno(dto.getUserId());
+        entity.setUser(user);
+
+        Activity activity = activityService.findByIdInterno(dto.getActivityId());
+        entity.setActivity(activity);
+
+        Module module = moduleService.findByIdInterno(dto.getModuleId());
+        entity.setModule(module);
 
         return entity ;
     }
@@ -107,14 +157,15 @@ public class UserActivityServiceImpl implements UserActivityService {
 
         try {
             beans.updateObjectos(entity, updated);
-            userActivityRepository.save(entity);
+            entity = userActivityRepository.save(entity);
+
+            userModuleService.verificarAndFinalizarmodule(entity);
         } catch (BusinessRuleException e) {
              throw e;
         } catch (Exception e) {
             throw new BusinessRuleException("erro desconhecido: "+e.getMessage());
         }
     }
-
 
     private void isValido(UserActivityDTO dto) {
         Validador.validador(dto);

@@ -2,6 +2,7 @@ package br.com.impacta.bootcamp.formacao.service;
 
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.formacao.dto.UserModuleDTO;
+import br.com.impacta.bootcamp.formacao.model.UserActivity;
 import br.com.impacta.bootcamp.formacao.model.UserModule;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
 
@@ -22,4 +23,5 @@ public interface UserModuleService {
 
     UserModuleDTO montarDTO(UserModule entity);
 
+    void verificarAndFinalizarmodule(UserActivity userActivity);
 }
