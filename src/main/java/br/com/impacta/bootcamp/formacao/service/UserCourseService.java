@@ -1,7 +1,9 @@
 package br.com.impacta.bootcamp.formacao.service;
 
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
+import br.com.impacta.bootcamp.admin.model.User;
 import br.com.impacta.bootcamp.formacao.dto.UserCourseDTO;
+import br.com.impacta.bootcamp.formacao.model.Course;
 import br.com.impacta.bootcamp.formacao.model.UserCourse;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
 
@@ -22,4 +24,7 @@ public interface UserCourseService {
 
     UserCourseDTO montarDTO(UserCourse entity);
 
+    void finalizarCourse(Course course, User user);
+
+    void atualizarPercentual(Course course, User user, double total, double feitas);
 }

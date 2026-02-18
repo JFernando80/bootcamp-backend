@@ -2,28 +2,20 @@ package br.com.impacta.bootcamp.commons.interceptor;
 
 
 import br.com.impacta.bootcamp.admin.dto.TokenDTO;
-import br.com.impacta.bootcamp.admin.dto.UserDTO;
-import br.com.impacta.bootcamp.admin.dto.UsuarioLogadoDTO;
-import br.com.impacta.bootcamp.admin.model.User;
 import br.com.impacta.bootcamp.admin.service.TokenService;
-import br.com.impacta.bootcamp.commons.dto.PermissionsDTO;
 import br.com.impacta.bootcamp.commons.exception.BusinessRuleException;
 import br.com.impacta.bootcamp.commons.model.Content;
-import br.com.impacta.bootcamp.commons.model.JsonResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component

@@ -11,15 +11,21 @@ import br.com.impacta.bootcamp.formacao.model.Course;
 import br.com.impacta.bootcamp.formacao.model.UserCourse;
 import br.com.impacta.bootcamp.formacao.repository.UserCourseRepository;
 import br.com.impacta.bootcamp.formacao.service.CourseService;
+import br.com.impacta.bootcamp.formacao.service.ModuleService;
+import br.com.impacta.bootcamp.formacao.service.UserCourseService;
 import br.com.impacta.bootcamp.formacao.service.impl.UserCourseServiceImpl;
 import br.com.impacta.bootcamp.util.UtilTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.Invocation;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,7 +36,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.lang.reflect.Field;
 import java.util.*;
 
-@SpringBootTest
+@MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith(MockitoExtension.class)
 public class UserCourseServiceTest {
 
     @InjectMocks
@@ -38,6 +45,12 @@ public class UserCourseServiceTest {
 
     @Mock
     private UserCourseRepository userCourseRepository;
+
+    @Mock
+    private ModuleService moduleService;
+
+    @Mock
+    private UserCourseService userCourseService;
 
     @Mock
     private CourseService courseService;
@@ -260,6 +273,8 @@ public class UserCourseServiceTest {
         userCourses.add(userCourse);
         Page<UserCourse> msPage = new PageImpl<>(userCourses);
         Mockito.when(userCourseRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class))).thenReturn(msPage);
+        Mockito.when(userCourseRepository.save(Mockito.any())).thenReturn(userCourses);
+
         service.save(dtoOk);
 
         Collection<Invocation> invocations = Mockito.mockingDetails(userCourseRepository).getInvocations();
@@ -281,6 +296,7 @@ public class UserCourseServiceTest {
 
         Page<UserCourse> msPage = new PageImpl<>(userCourses);
         Mockito.when(userCourseRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class))).thenReturn(msPage);
+        Mockito.when(userCourseRepository.save(Mockito.any())).thenReturn(userCourses);
         service.save(dtoOk);
 
         Collection<Invocation> invocations = Mockito.mockingDetails(userCourseRepository).getInvocations();

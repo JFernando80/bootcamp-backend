@@ -2,6 +2,7 @@ package br.com.impacta.bootcamp.formacao.service;
 
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.formacao.dto.ModuleDTO;
+import br.com.impacta.bootcamp.formacao.model.Course;
 import br.com.impacta.bootcamp.formacao.model.Module;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
 
@@ -22,4 +23,5 @@ public interface ModuleService {
 
     ModuleDTO montarDTO(Module entity);
 
+    List<Module> findAllByCourse(Course course);
 }

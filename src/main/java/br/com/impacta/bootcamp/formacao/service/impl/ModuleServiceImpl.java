@@ -96,6 +96,11 @@ public class ModuleServiceImpl implements ModuleService {
         return dto;
     }
 
+    @Override
+    public List<Module> findAllByCourse(Course course) {
+        return moduleRepository.findAllByCourse(course);
+    }
+
     private Module montarEntity(ModuleDTO dto) {
         Module entity = new Module();
         beans.updateObjectos(entity, dto);

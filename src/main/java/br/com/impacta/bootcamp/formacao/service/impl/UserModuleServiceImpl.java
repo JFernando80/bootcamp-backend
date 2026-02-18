@@ -4,11 +4,15 @@ package br.com.impacta.bootcamp.formacao.service.impl;
 import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.admin.service.UserService;
 import br.com.impacta.bootcamp.formacao.model.Module;
+import br.com.impacta.bootcamp.formacao.model.UserActivity;
+import br.com.impacta.bootcamp.formacao.model.UserCourse;
 import br.com.impacta.bootcamp.formacao.service.ModuleService;
 import br.com.impacta.bootcamp.admin.model.User;
 import br.com.impacta.bootcamp.formacao.dto.UserModuleDTO;
 import br.com.impacta.bootcamp.formacao.model.UserModule;
 import br.com.impacta.bootcamp.formacao.repository.UserModuleRepository;
+import br.com.impacta.bootcamp.formacao.service.UserActivityService;
+import br.com.impacta.bootcamp.formacao.service.UserCourseService;
 import br.com.impacta.bootcamp.formacao.service.UserModuleService;
 import br.com.impacta.bootcamp.formacao.specification.UserModuleSpecification;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
@@ -34,6 +38,12 @@ public class UserModuleServiceImpl implements UserModuleService {
 
     @Autowired
     private UserModuleRepository userModuleRepository;
+
+    @Autowired
+    private UserActivityService userActivityService;
+
+    @Autowired
+    private UserCourseService userCourseService;
 
     @Autowired
     private UserService userService;
@@ -106,6 +116,46 @@ public class UserModuleServiceImpl implements UserModuleService {
         dto.setModuleTitle(entity.getModule().getTitle());
 
         return dto;
+    }
+
+    @Override
+    public void verificarAndFinalizarmodule(UserActivity userActivity) {
+        List<UserModule> userModules = userModuleRepository.findAllByUser(userActivity.getUser());
+
+        double total = 0D;
+        double feitas = 0D;
+
+        boolean moduleFinalizado = true;
+        for (UserModule userModule : userModules) {
+            List<UserActivity> userActivities = userActivityService.findAllByModule(userModule.getModule());
+
+            total = total + userActivities.size();
+            boolean finalizado = true;
+            for (UserActivity activity : userActivities) {
+                if (!activity.getStatus().equalsIgnoreCase("FINALIZADO")) {
+                    finalizado = false;
+                }
+
+                feitas ++;
+            }
+
+            if (finalizado && !Objects.equals("FINALIZADO", userModule.getStatus())) {
+                userModule.setStatus("FINALIZADO");
+                userModule.setCompletedAt(new Date());
+            } else if (!Objects.equals("FINALIZADO", userModule.getStatus())) {
+                userModule.setStatus("CURSANDO");
+            }
+
+            if (!Objects.equals("FINALIZADO", userModule.getStatus())) {
+                moduleFinalizado = false;
+            }
+        }
+
+        if (moduleFinalizado) {
+            userCourseService.finalizarCourse(userActivity.getModule().getCourse(), userActivity.getUser());
+        } else {
+            userCourseService.atualizarPercentual(userActivity.getModule().getCourse(), userActivity.getUser(), total, feitas);
+        }
     }
 
     private UserModule montarEntity(UserModuleDTO dto) {
