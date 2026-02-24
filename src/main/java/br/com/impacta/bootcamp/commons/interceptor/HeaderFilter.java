@@ -67,6 +67,8 @@ public class HeaderFilter implements Filter {
 
         try {
             filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             MDC.remove(CORRELATION_ID_HEADER_NAME);
         }

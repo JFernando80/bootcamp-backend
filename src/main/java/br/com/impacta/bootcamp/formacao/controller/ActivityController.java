@@ -65,7 +65,6 @@ public class ActivityController {
     @Monitorar
     @PostMapping(value = "/filtro/{pagina}")
     public JsonResponse filtro(@RequestBody List<SearchCriteriaDTO> lista,
-                               @RequestAttribute(value = "content") Content content,
                                @PathVariable("pagina") int pagina) {
         return JsonResponse.ok(activityService.getAll(lista, pagina));
     }
