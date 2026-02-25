@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,6 +84,7 @@ public class UserCourseServiceImpl implements UserCourseService {
         return bodyListDTO;
     }
 
+    @Transactional
     @Override
     public void save(UserCourseDTO dto) {
         isRepetido(dto);
@@ -117,13 +119,14 @@ public class UserCourseServiceImpl implements UserCourseService {
                 activityDTO.setModuleDescription(module.getDescription());
                 activityDTO.setModuleId(module.getId());
 
-                userActivityService.save(activityDTO);
+                try {
+                    userActivityService.save(activityDTO);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
         }
-
-
-
     }
 
     @Override

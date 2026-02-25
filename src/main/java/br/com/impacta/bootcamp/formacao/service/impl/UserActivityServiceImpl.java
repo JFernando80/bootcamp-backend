@@ -177,19 +177,20 @@ public class UserActivityServiceImpl implements UserActivityService {
         List<SearchCriteriaDTO> lista = new ArrayList<>();
 
         SearchCriteriaDTO criteria = new SearchCriteriaDTO();
-
         criteria.setValue(dto.getUserId());
         criteria.setKey("id");
         criteria.setOperation(SearchOperation.EQUAL.name());
         criteria.setClasses("user");
         lista.add(criteria);
 
+        criteria = new SearchCriteriaDTO();
         criteria.setValue(dto.getActivityId());
         criteria.setKey("id");
         criteria.setOperation(SearchOperation.EQUAL.name());
         criteria.setClasses("activity");
         lista.add(criteria);
 
+        criteria = new SearchCriteriaDTO();
         criteria.setValue(dto.getModuleId());
         criteria.setKey("id");
         criteria.setOperation(SearchOperation.EQUAL.name());
