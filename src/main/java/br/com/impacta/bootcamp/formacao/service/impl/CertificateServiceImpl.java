@@ -4,9 +4,11 @@ import br.com.impacta.bootcamp.admin.dto.BodyListDTO;
 import br.com.impacta.bootcamp.commons.dto.SearchCriteriaDTO;
 import br.com.impacta.bootcamp.commons.enums.SearchOperation;
 import br.com.impacta.bootcamp.commons.exception.BusinessRuleException;
+import br.com.impacta.bootcamp.commons.model.Content;
 import br.com.impacta.bootcamp.commons.util.Beans;
 import br.com.impacta.bootcamp.commons.util.Validador;
 import br.com.impacta.bootcamp.formacao.dto.CertificateDTO;
+import br.com.impacta.bootcamp.formacao.dto.DownloadFile;
 import br.com.impacta.bootcamp.formacao.model.Certificate;
 import br.com.impacta.bootcamp.formacao.repository.CertificateRepository;
 import br.com.impacta.bootcamp.formacao.service.CertificateService;
@@ -17,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +32,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Autowired
     private Beans beans;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Value("${page.filter.offset}")
     private Integer offset;
@@ -88,6 +95,24 @@ public class CertificateServiceImpl implements CertificateService {
         return certificateRepository.findByToken(token);
     }
 
+    public static final String FUNDO = "/imagens/fundo.png";
+
+    @Override
+    public DownloadFile gerarCertificado(Content content, String token) {
+
+        Map<String, Object> parametros = new HashMap<>();
+        parametros.put("fundo", getClass().getResourceAsStream(FUNDO));
+
+        parametros.put("token", token);
+
+        InputStream inputStream = getClass().getResourceAsStream("/reports/impacta_certificado.jasper");
+
+        DownloadFile down = new DownloadFile();
+        down.setArquivo(beans.gerarRelatorio(parametros, inputStream, dataSource));
+        down.setTipo("pdf");
+
+        return down;
+    }
 
     private void isValido(CertificateDTO dto) {
         Validador.validador(dto);

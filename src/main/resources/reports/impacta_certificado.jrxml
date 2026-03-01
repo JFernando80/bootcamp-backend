@@ -1,0 +1,59 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="impacta_certificado" language="java" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1364acfc-97f3-47ab-ac3b-316e510dc266">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="257"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="730"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="impact_bootcamp"/>
+	<parameter name="fundo" class="java.lang.Object"/>
+	<parameter name="token" class="java.lang.String"/>
+	<query language="SQL"><![CDATA[select ce."token" , u."name", u.sobrenome , c.title , uc.certificate_issued_at  
+from user_courses uc
+inner join courses c on uc.course_id = c.id 
+inner join users u on u.id = uc.user_id 
+inner join certificate ce on CAST(ce."token" AS text) =  uc.certificate_token
+where uc.status = 'FINALIZADO' and CAST(ce."token" AS text) = '2113be16-833c-4b4d-b42d-b761dc15bb9b' ;]]></query>
+	<field name="token" class="java.util.UUID">
+		<property name="com.jaspersoft.studio.field.name" value="token"/>
+		<property name="com.jaspersoft.studio.field.label" value="token"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="certificate"/>
+	</field>
+	<field name="name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="users"/>
+	</field>
+	<field name="sobrenome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="sobrenome"/>
+		<property name="com.jaspersoft.studio.field.label" value="sobrenome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="users"/>
+	</field>
+	<field name="title" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="title"/>
+		<property name="com.jaspersoft.studio.field.label" value="title"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="courses"/>
+	</field>
+	<field name="certificate_issued_at" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="certificate_issued_at"/>
+		<property name="com.jaspersoft.studio.field.label" value="certificate_issued_at"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="user_courses"/>
+	</field>
+	<background splitType="Stretch"/>
+	<detail>
+		<band height="465" splitType="Stretch">
+			<element kind="image" uuid="b453040d-1b51-4291-9cd0-cc875d4f6940" x="0" y="0" width="800" height="465" scaleImage="FillFrame">
+				<expression><![CDATA[$P{fundo}]]></expression>
+			</element>
+			<element kind="textField" uuid="6e8ee109-160a-4edf-a9c3-c3e0680bc751" x="130" y="50" width="520" height="59" forecolor="#B6ADFF" backcolor="#A9A9F5" fontSize="37.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["Certificado"]]></expression>
+			</element>
+			<element kind="textField" uuid="81ba70fc-5c2c-4a7b-946f-eb5631724b5d" x="80" y="160" width="660" height="70" forecolor="#B6ADFF" backcolor="#A9A9F5" fontSize="20.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["Certificamos que " + $F{name} + " " + $F{sobrenome} + " realizou o curso "+ $F{title} + " com carga horaria de 20 horas."]]></expression>
+			</element>
+			<element kind="textField" uuid="7bb2f95e-6920-424d-9e6a-7e2158ab639e" x="430" y="251" width="310" height="70" forecolor="#B6ADFF" backcolor="#A9A9F5" fontSize="20.0" bold="true" hTextAlign="Center">
+				<expression><![CDATA["Conclusão em : "+
+($F{certificate_issued_at} != null ?
+new SimpleDateFormat("dd/MM/yyyy").format($F{certificate_issued_at}) : "")]]></expression>
+			</element>
+		</band>
+	</detail>
+</jasperReport>

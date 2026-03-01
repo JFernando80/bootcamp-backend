@@ -17,6 +17,8 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
@@ -37,6 +39,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.imageio.ImageIO;
+import javax.sql.DataSource;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Field;
@@ -49,6 +52,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -79,6 +83,25 @@ public class Beans {
     private String patternHora = "HH:mm";
     private String pattern = "dd/MM/yyyy";
 
+
+    public byte[] gerarRelatorio(Map<String, Object> parametros, InputStream inputStream, DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()){
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(inputStream);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(
+                    jasperReport, parametros, connection);
+
+            return  JasperExportManager.exportReportToPdf(jasperPrint);
+
+        } catch (JRException e) {
+            log.info("Erro ao gerar o relatorio. Mensagem: {}", e.getMessage());
+            e.printStackTrace();
+            throw new BusinessRuleException(e.getMessage());
+        } catch (Exception  e) {
+            e.printStackTrace();
+            log.info("Erro ao gerar o relatorio. Mensagem: {}", e.getMessage());
+            throw new BusinessRuleException(e.getMessage());
+        }
+    }
     public void podeAcessar(Content content, PermissoesEnum permission) {
         boolean existe = false;
         for (PermissionsDTO dto : content.getUsuarioLogadoDTO().getPermissionsDTOS()) {
