@@ -39,20 +39,23 @@ where uc.status = 'FINALIZADO' and CAST(ce."token" AS text) = '2113be16-833c-4b4
 	</field>
 	<background splitType="Stretch"/>
 	<detail>
-		<band height="465" splitType="Stretch">
-			<element kind="image" uuid="b453040d-1b51-4291-9cd0-cc875d4f6940" x="0" y="0" width="800" height="465" scaleImage="FillFrame">
+		<band height="555" splitType="Stretch">
+			<element kind="image" uuid="b453040d-1b51-4291-9cd0-cc875d4f6940" x="0" y="0" width="800" height="555" scaleImage="FillFrame">
 				<expression><![CDATA[$P{fundo}]]></expression>
 			</element>
 			<element kind="textField" uuid="6e8ee109-160a-4edf-a9c3-c3e0680bc751" x="130" y="50" width="520" height="59" forecolor="#B6ADFF" backcolor="#A9A9F5" fontSize="37.0" bold="true" hTextAlign="Center">
 				<expression><![CDATA["Certificado"]]></expression>
 			</element>
-			<element kind="textField" uuid="81ba70fc-5c2c-4a7b-946f-eb5631724b5d" x="80" y="160" width="660" height="70" forecolor="#B6ADFF" backcolor="#A9A9F5" fontSize="20.0" bold="true" hTextAlign="Center">
+			<element kind="textField" uuid="81ba70fc-5c2c-4a7b-946f-eb5631724b5d" x="80" y="182" width="660" height="70" forecolor="#B6ADFF" backcolor="#A9A9F5" fontSize="20.0" bold="true" hTextAlign="Center">
 				<expression><![CDATA["Certificamos que " + $F{name} + " " + $F{sobrenome} + " realizou o curso "+ $F{title} + " com carga horaria de 20 horas."]]></expression>
 			</element>
-			<element kind="textField" uuid="7bb2f95e-6920-424d-9e6a-7e2158ab639e" x="430" y="251" width="310" height="70" forecolor="#B6ADFF" backcolor="#A9A9F5" fontSize="20.0" bold="true" hTextAlign="Center">
+			<element kind="textField" uuid="7bb2f95e-6920-424d-9e6a-7e2158ab639e" x="430" y="295" width="310" height="70" forecolor="#B6ADFF" backcolor="#A9A9F5" fontSize="20.0" bold="true" hTextAlign="Center">
 				<expression><![CDATA["Conclusão em : "+
 ($F{certificate_issued_at} != null ?
 new SimpleDateFormat("dd/MM/yyyy").format($F{certificate_issued_at}) : "")]]></expression>
+			</element>
+			<element kind="textField" uuid="839b81d0-ab01-4bf6-82ff-0c4411ab0e97" x="309" y="440" width="431" height="30" forecolor="#B6ADFF" backcolor="#A9A9F5" fontSize="10.0" bold="true" hTextAlign="Right">
+				<expression><![CDATA["token de validação: " + $F{token}]]></expression>
 			</element>
 		</band>
 	</detail>
