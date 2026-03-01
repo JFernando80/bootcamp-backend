@@ -11,7 +11,7 @@ from user_courses uc
 inner join courses c on uc.course_id = c.id 
 inner join users u on u.id = uc.user_id 
 inner join certificate ce on CAST(ce."token" AS text) =  uc.certificate_token
-where uc.status = 'FINALIZADO' and CAST(ce."token" AS text) = '2113be16-833c-4b4d-b42d-b761dc15bb9b' ;]]></query>
+where uc.status = 'FINALIZADO' and CAST(ce."token" AS text) = $P{token};]]></query>
 	<field name="token" class="java.util.UUID">
 		<property name="com.jaspersoft.studio.field.name" value="token"/>
 		<property name="com.jaspersoft.studio.field.label" value="token"/>
