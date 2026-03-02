@@ -21,7 +21,7 @@ public class ClassesVariaveisDTO {
 
     private ClassesDTO classesDTO;
 
-    @Validation(required = true, lengthMax = 70, lengthMin = 1)
+    @Validation(required = true, lengthMax = 70, lengthMin = 2)
     private String variavel;
 
     @Validation(required = true, lengthMax = 70, lengthMin = 3)
